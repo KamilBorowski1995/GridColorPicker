@@ -1,0 +1,60 @@
+.grid-color-picker {
+  display: none;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  left: 0;
+}
+
+.grid-color-picker.open {
+  display: block;
+}
+
+.grid-color-picker-autocomplete-wrapper {
+  position: relative;
+  cursor: pointer;
+  display: inline;
+}
+
+.grid-color-picker-autocomplete-wrapper > input {
+  cursor: pointer;
+}
+
+.grid-color-picker-autocomplete-wrapper .grid-color-picker-color-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.grid-color-picker-color-palette > div {
+  display: grid;
+}
+
+.grid-color-picker-top-row,
+.grid-color-picker-grid-colors {
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.grid-color-picker-color-wrapper {
+  padding: 2px;
+  cursor: pointer;
+}
+
+.grid-color-picker-color {
+  width: 20px;
+  height: 20px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: 0.3s ease;
+}
+
+.grid-color-picker-color-wrapper:hover .grid-color-picker-color {
+  transform: scale(1.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
