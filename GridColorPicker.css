@@ -59,6 +59,10 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+.gcp-box.active .gcp-box-color {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
 .gcp.open,
 .gcp.slide.close,
 .gcp.open,

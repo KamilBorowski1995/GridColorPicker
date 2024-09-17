@@ -17,9 +17,10 @@ class GridColorPicker {
     this.setSelectType = options?.setSelectType || "hex";
     this.mainColors = options?.mainColors || colorsPalette.main;
     this.othersColors = options?.othersColors || colorsPalette.others;
-    this.callback = options?.callback || null;
     this.animation = options?.animation || "none";
     this.itemsPerRow = options?.itemsPerRow || 8;
+    this.defaultColor = options?.defaultColor || null;
+    this.callback = options?.callback || null;
 
     this.isModalOpen = false;
 
@@ -35,7 +36,6 @@ class GridColorPicker {
     this.#createId();
     this.#convertInputToHidden();
     this.#createModal();
-    this.#addColorFromInitValue();
   }
 
   open() {
@@ -57,7 +57,9 @@ class GridColorPicker {
   }
 
   #createId() {
-    let tmpId = "dt" + (Math.random().toString(36) + "000000000").slice(2, 10);
+    let tmpId = `${this.selector}-${(
+      Math.random().toString(36) + "000000000"
+    ).slice(2, 10)}`;
     this.components.modal.id = tmpId;
   }
 
@@ -77,12 +79,14 @@ class GridColorPicker {
 
     input.insertAdjacentElement("afterend", wrapper);
     this.components.inputAutocomplete = inputAutocomplete;
+
+    this.#addColorFromInitValue();
   }
 
   #createModal() {
     const node = document.createElement("div");
     node.id = this.components.modal.id;
-    node.classList.add("d-none", `${this.selector}`);
+    node.classList.add(this.selector);
     node.style.position = "absolute";
     if (/^(slide|fade)$/.test(this.animation)) {
       node.classList.add(this.animation);
@@ -108,11 +112,10 @@ class GridColorPicker {
   async #addColorFromInitValue() {
     const valueID = this.input.value;
 
-    if (!valueID) {
+    if (!valueID && !this.defaultColor) {
       return;
     }
-
-    this.#addColorBoxToInput({ hex: valueID, rgb: valueID });
+    this.#addColorBoxToInput(this.defaultColor, valueID);
   }
 
   #addOpenListener() {
@@ -177,6 +180,8 @@ class GridColorPicker {
       const colorWrapper = document.createElement("div");
       colorWrapper.classList.add(`${this.selector}-box`);
 
+      colorWrapper.setAttribute("data-color", color);
+
       const colorNode = document.createElement("div");
       colorNode.classList.add(`${this.selector}-box-color`);
       colorNode.style.backgroundColor = color;
@@ -190,7 +195,21 @@ class GridColorPicker {
     });
   }
 
-  #addColorBoxToInput(color) {
+  #addColorBoxToInput(defaultColor, inoutValueColor) {
+    let color = null;
+
+    if (defaultColor) {
+      const isColor =
+        this.#detectColorFormat(defaultColor) !== "Unknown format";
+      color = isColor ? defaultColor : null;
+    }
+
+    if (!color && inoutValueColor) {
+      const isColor =
+        this.#detectColorFormat(inoutValueColor) !== "Unknown format";
+      color = isColor ? inoutValueColor : null;
+    }
+
     const colorFormated = this.#convertColor(color, this.setSelectType);
 
     this.components.input.value = this.components.inputAutocomplete.value =
@@ -200,6 +219,22 @@ class GridColorPicker {
 
     wrapper.style.backgroundColor = colorFormated;
     wrapper.style.color = "transparent";
+
+    const findActive = document.querySelectorAll(
+      `.${this.selector}-box.active`
+    );
+    if (findActive) {
+      findActive.forEach((item) => {
+        item.classList.remove("active");
+      });
+    }
+
+    const findDataColor = document.querySelectorAll(`[data-color="${color}"]`);
+    if (findDataColor) {
+      findDataColor.forEach((item) => {
+        item.classList.add("active");
+      });
+    }
 
     if (typeof this.callback === "function") {
       this.callback(colorFormated);
