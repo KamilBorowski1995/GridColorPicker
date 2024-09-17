@@ -1,6 +1,6 @@
 ﻿# GridColorPicker
 
-`GridColorPicker` is a JavaScript library that allows users to select colors from a grid of colors. The selected color can be returned in various formats such as HEX, RGB, or RGBA, depending on the configuration.
+`GridColorPicker` is a JavaScript library that allows users to select colors from a grid. The selected color can be returned in various formats such as HEX, RGB, or RGBA, depending on the configuration.
 
 ![Preview GridColorPicker](images/GridColorPicker.png)
 
@@ -12,6 +12,7 @@ const gridColorPicker = new GridColorPicker(colorPickerElement, {
   setSelectType: "hex", // Choose the format: hex, rgb, or rgba
   mainColors: [], // Main colors to display in the picker
   othersColors: [], // Additional colors to display in the picker
+  animation: "fade", // Animation type: fade, slide, or none
   callback: (selectedColor) => {
     console.log("Selected color:", selectedColor); // Callback function to handle the selected color
   },
@@ -25,6 +26,7 @@ const gridColorPicker = new GridColorPicker(colorPickerElement, {
 | `setSelectType` | `string`   | Specifies the format of the selected color. Can be `hex`, `rgb`, or `rgba`.                                                                            |
 | `mainColors`    | `array`    | An array of colors to display as the main palette. Colors can be in hex, rgb, or rgba format.                                                          |
 | `othersColors`  | `array`    | An array of additional colors to display below the main colors. Colors can be in hex, rgb, or rgba format.                                             |
+| `animation`     | `string`   | Sets the type of animation when the color picker opens/closes. Can be `"fade"`, `"slide"`, or `"none"`.                                                |
 | `callback`      | `function` | A callback function that is executed when a color is selected. The selected color is passed to this function in the format defined by `setSelectType`. |
 
 ### Detailed Option Descriptions:
@@ -38,6 +40,12 @@ const gridColorPicker = new GridColorPicker(colorPickerElement, {
 - **mainColors**: An array containing the main colors that will be displayed at the top of the grid. Each color can be in hex, rgb, or rgba format. This can be an empty array if you don't want to provide predefined colors.
 
 - **othersColors**: An array of additional colors that will be displayed below the main colors. Like `mainColors`, these colors can also be in hex, rgb, or rgba format.
+
+- **animation**: Specifies the type of animation used when opening or closing the color picker. Possible values are:
+
+  - `"fade"`: The color picker will fade in and out.
+  - `"slide"`: The color picker will slide in and out.
+  - `"none"`: No animation will be applied when the color picker opens or closes.
 
 - **callback**: A function that is triggered when a user selects a color from the grid. The selected color is passed as an argument to the callback, and it will be in the format defined by `setSelectType`.
 
@@ -55,7 +63,6 @@ The `GridColorPicker` object also provides some useful methods to control the co
 
 - **open()**: Opens the color picker dialog, allowing users to select a color.
 - **close()**: Closes the color picker dialog.
-
 - **isOpen()**: Returns a boolean value indicating whether the color picker is currently open (`true`) or closed (`false`).
 
 ## Example of Using the Functions
@@ -71,5 +78,3 @@ gridColorPicker.close();
 const isPickerOpen = gridColorPicker.isOpen();
 console.log("Is picker open:", isPickerOpen);
 ```
-
-This should provide a clear and detailed explanation of how to use the `GridColorPicker` library in JavaScript.

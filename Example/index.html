@@ -5,18 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Example: GridColorPicker</title>
     <link rel="stylesheet" href="../GridColorPicker.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        background-color: #f0f0f0;
+        padding-top: 100px;
+      }
+
+      .form-control {
+        width: 200px;
+        height: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        color: transparent;
+      }
+
+      .form-control:hover,
+      .form-control:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.6);
+      }
+    </style>
   </head>
   <body>
-    <input type="text" id="colorPicker" />
+    <input type="text" id="colorPicker" class="form-control" />
 
     <script src="../GridColorPicker.js"></script>
 
     <script>
       const colorElement = document.getElementById("colorPicker");
       const gridColorPicker = new GridColorPicker(colorElement, {
-        setSelectType: "hex", // hex, rgb, rgba // options functtion
-        callback: (color) => {
-          console.log(color);
+        setSelectType: "hex", // hex, rgb, rgba
+        animation: "fade", // slide, fade
+        callback: (selectedColor) => {
+          console.log(selectedColor);
         },
       });
     </script>
