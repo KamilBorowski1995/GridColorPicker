@@ -41,7 +41,8 @@
       const colorElement = document.getElementById("colorPicker");
       const gridColorPicker = new GridColorPicker(colorElement, {
         setSelectType: "hex", // hex, rgb, rgba
-        animation: "fade", // slide, fade
+        animation: "fade", // slide, fade or none
+
         callback: (selectedColor) => {
           console.log(selectedColor);
         },

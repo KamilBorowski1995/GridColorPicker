@@ -1,4 +1,4 @@
-.grid-color-picker {
+.gcp {
   display: none;
   background-color: #fff;
   padding: 10px;
@@ -8,17 +8,17 @@
   left: 0;
 }
 
-.grid-color-picker-autocomplete-wrapper {
+.gcp-autocomplete-wrapper {
   position: relative;
   cursor: pointer;
   display: inline;
 }
 
-.grid-color-picker-autocomplete-wrapper > input {
+.gcp-autocomplete-wrapper > input {
   cursor: pointer;
 }
 
-.grid-color-picker-autocomplete-wrapper .grid-color-picker-color-box {
+.gcp-autocomplete-wrapper .gcp-color-box {
   position: absolute;
   top: 0;
   left: 0;
@@ -27,22 +27,26 @@
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
-
-.grid-color-picker-color-palette > div {
-  display: grid;
+.gcp-top-colors,
+.gcp-grid-colors {
+  display: flex;
+  flex-direction: column;
 }
 
-.grid-color-picker-top-row,
-.grid-color-picker-grid-colors {
-  grid-template-columns: repeat(10, 1fr);
+.gcp-row {
+  display: flex;
 }
 
-.grid-color-picker-color-wrapper {
+.gcp-top-colors {
+  margin-bottom: 10px;
+}
+
+.gcp-box {
   padding: 2px;
   cursor: pointer;
 }
 
-.grid-color-picker-color {
+.gcp-box-color {
   width: 20px;
   height: 20px;
   border: 1px solid transparent;
@@ -50,21 +54,21 @@
   transition: 0.3s ease;
 }
 
-.grid-color-picker-color-wrapper:hover .grid-color-picker-color {
+.gcp-box:hover .gcp-box-color {
   transform: scale(1.2);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.grid-color-picker.open,
-.grid-color-picker.slide.close,
-.grid-color-picker.open,
-.grid-color-picker.fade.close {
+.gcp.open,
+.gcp.slide.close,
+.gcp.open,
+.gcp.fade.close {
   display: block;
 }
-.grid-color-picker.slide.open {
+.gcp.slide.open {
   animation: slideUpIn 0.3s ease;
 }
-.grid-color-picker.slide.close {
+.gcp.slide.close {
   animation: slideUpOut 0.3s forwards;
 }
 
@@ -91,10 +95,10 @@
   }
 }
 
-.grid-color-picker.fade.open {
+.gcp.fade.open {
   animation: fadeUpIn 0.3s ease;
 }
-.grid-color-picker.fade.close {
+.gcp.fade.close {
   animation: fadeUpOut 0.3s forwards;
 }
 

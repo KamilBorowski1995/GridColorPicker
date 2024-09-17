@@ -1,14 +1,14 @@
 class GridColorPicker {
   constructor(input, options) {
     this.name = "GridColorPicker";
-    this.selector = "grid-color-picker";
+    this.selector = "gcp";
     this.components = {
       input: input,
       inputAutocomplete: null,
       modal: {
         id: null,
         element: null,
-        body: null,
+        container: null,
       },
     };
     this.input = input;
@@ -19,6 +19,7 @@ class GridColorPicker {
     this.othersColors = options?.othersColors || colorsPalette.others;
     this.callback = options?.callback || null;
     this.animation = options?.animation || "none";
+    this.itemsPerRow = options?.itemsPerRow || 8;
 
     this.isModalOpen = false;
 
@@ -91,22 +92,12 @@ class GridColorPicker {
     const container = document.createElement("div");
     container.classList.add(`${this.selector}-container`, "fs-xs");
 
-    const header = document.createElement("div");
-    header.classList.add(`${this.selector}-header`, "col-md-auto", "ms-auto");
-
-    container.appendChild(header);
-
-    const body = document.createElement("div");
-    body.classList.add(`${this.selector}-body`);
-
-    container.appendChild(body);
-
     node.appendChild(container);
 
     this.components.inputAutocomplete.parentElement.appendChild(node);
 
     this.components.modal.element = node;
-    this.components.modal.body = body;
+    this.components.modal.container = container;
 
     this.#addOpenListener();
     this.#addCloseListener();
@@ -147,41 +138,47 @@ class GridColorPicker {
   #renderBody() {
     const lastTbody = document
       .getElementById(this.components.modal.id)
-      .querySelector(`${this.selector}-color-palette`);
+      .querySelector(`${this.selector}-palette`);
     if (lastTbody) {
       return;
     }
 
     const colorPaletteWrapper = document.createElement("div");
+    colorPaletteWrapper.classList.add(`${this.selector}-palette`);
 
-    colorPaletteWrapper.classList.add(`${this.selector}-color-palette`);
-
-    const topRow = document.createElement("div");
-    topRow.classList.add(`${this.selector}-top-row`);
-    this.mainColors.forEach((color) => {
-      const colorWrapper = document.createElement("div");
-      colorWrapper.classList.add(`${this.selector}-color-wrapper`);
-
-      const colorNode = document.createElement("div");
-      colorNode.classList.add(`${this.selector}-color`);
-      colorNode.style.backgroundColor = color;
-      colorNode.addEventListener("click", () => {
-        this.#addColorBoxToInput(color);
-        this.close();
-      });
-
-      colorWrapper.appendChild(colorNode);
-      topRow.appendChild(colorWrapper);
-    });
+    const topColors = document.createElement("div");
+    topColors.classList.add(`${this.selector}-top-colors`);
+    colorPaletteWrapper.appendChild(topColors);
 
     const gridColors = document.createElement("div");
     gridColors.classList.add(`${this.selector}-grid-colors`);
-    this.othersColors.forEach((color) => {
+    colorPaletteWrapper.appendChild(gridColors);
+
+    this.#renderColorGroups(this.mainColors, topColors, `${this.selector}-row`);
+
+    this.#renderColorGroups(
+      this.othersColors,
+      gridColors,
+      `${this.selector}-row`
+    );
+
+    this.components.modal.container.appendChild(colorPaletteWrapper);
+  }
+
+  #renderColorGroups(colors, parentElement, rowClass) {
+    let colorRow;
+    colors.forEach((color, index) => {
+      if (index % this.itemsPerRow === 0) {
+        colorRow = document.createElement("div");
+        colorRow.classList.add(rowClass);
+        parentElement.appendChild(colorRow);
+      }
+
       const colorWrapper = document.createElement("div");
-      colorWrapper.classList.add(`${this.selector}-color-wrapper`);
+      colorWrapper.classList.add(`${this.selector}-box`);
 
       const colorNode = document.createElement("div");
-      colorNode.classList.add(`${this.selector}-color`);
+      colorNode.classList.add(`${this.selector}-box-color`);
       colorNode.style.backgroundColor = color;
       colorNode.addEventListener("click", () => {
         this.#addColorBoxToInput(color);
@@ -189,13 +186,8 @@ class GridColorPicker {
       });
 
       colorWrapper.appendChild(colorNode);
-      gridColors.appendChild(colorWrapper);
+      colorRow.appendChild(colorWrapper);
     });
-
-    colorPaletteWrapper.appendChild(topRow);
-    colorPaletteWrapper.appendChild(gridColors);
-
-    this.components.modal.body.appendChild(colorPaletteWrapper);
   }
 
   #addColorBoxToInput(color) {
@@ -309,16 +301,14 @@ class GridColorPicker {
 
 const colorsPalette = {
   main: [
-    "#ffffff",
     "#ff0000",
-    "#00ff00",
-    "#0000ff",
+    "#ff6600",
     "#ffff00",
+    "#00ff00",
     "#00ffff",
+    "#0000ff",
     "#ff00ff",
-    "#000000",
     "#808080",
-    "#800000",
   ],
   others: [
     "#ffcccc",
@@ -329,8 +319,6 @@ const colorsPalette = {
     "#ccccff",
     "#ffccff",
     "#cccccc",
-    "#cc9999",
-    "#ff9966",
 
     "#ff9999",
     "#ffcc66",
@@ -340,8 +328,6 @@ const colorsPalette = {
     "#9999ff",
     "#ff99ff",
     "#999999",
-    "#993366",
-    "#339966",
 
     "#ff6666",
     "#ff9933",
@@ -351,8 +337,6 @@ const colorsPalette = {
     "#6666ff",
     "#ff66ff",
     "#666666",
-    "#660033",
-    "#336600",
 
     "#ff3333",
     "#ff6633",
@@ -362,8 +346,6 @@ const colorsPalette = {
     "#3333ff",
     "#ff33ff",
     "#333333",
-    "#993300",
-    "#003300",
 
     "#ff0000",
     "#ff6600",
@@ -373,8 +355,6 @@ const colorsPalette = {
     "#0000ff",
     "#ff00ff",
     "#000000",
-    "#800000",
-    "#008000",
 
     "#cc0000",
     "#cc6600",
@@ -384,8 +364,6 @@ const colorsPalette = {
     "#0000cc",
     "#cc00cc",
     "#4d4d4d",
-    "#800080",
-    "#008080",
 
     "#990000",
     "#994c00",
@@ -395,7 +373,14 @@ const colorsPalette = {
     "#000099",
     "#990099",
     "#666666",
-    "#993366",
-    "#336699",
+
+    "#660000",
+    "#663300",
+    "#666600",
+    "#006600",
+    "#006666",
+    "#000066",
+    "#660066",
+    "#333333",
   ],
 };
