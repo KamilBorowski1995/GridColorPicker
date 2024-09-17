@@ -11,11 +11,14 @@ class GridColorPicker {
         body: null,
       },
     };
+    this.input = input;
+
+    // Options
     this.setSelectType = options?.setSelectType || "hex";
     this.mainColors = options?.mainColors || colorsPalette.main;
     this.othersColors = options?.othersColors || colorsPalette.others;
     this.callback = options?.callback || null;
-    this.input = input;
+    this.animation = options?.animation || "none";
 
     this.isModalOpen = false;
 
@@ -40,7 +43,11 @@ class GridColorPicker {
   }
 
   close() {
+    this.components.modal.element.classList.add("close");
     this.components.modal.element.classList.remove("open");
+    setTimeout(() => {
+      this.components.modal.element.classList.remove("close");
+    }, 300);
     this.isModalOpen = false;
   }
 
@@ -63,7 +70,7 @@ class GridColorPicker {
     const inputAutocomplete = document.createElement("input");
     inputAutocomplete.type = "text";
     inputAutocomplete.id = input.id + "_autocomplete";
-    inputAutocomplete.classList.add("form-control");
+    inputAutocomplete.className = input.className;
 
     wrapper.appendChild(inputAutocomplete);
 
@@ -76,6 +83,9 @@ class GridColorPicker {
     node.id = this.components.modal.id;
     node.classList.add("d-none", `${this.selector}`);
     node.style.position = "absolute";
+    if (/^(slide|fade)$/.test(this.animation)) {
+      node.classList.add(this.animation);
+    }
     node.style.zIndex = 9999;
 
     const container = document.createElement("div");
