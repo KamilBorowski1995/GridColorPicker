@@ -41,6 +41,10 @@ class GridColorPicker {
   open() {
     this.components.modal.element.classList.add("open");
     this.isModalOpen = true;
+
+    this.#trapFocus();
+
+    document.body.setAttribute("aria-hidden", "true");
   }
 
   close() {
@@ -49,7 +53,61 @@ class GridColorPicker {
     setTimeout(() => {
       this.components.modal.element.classList.remove("close");
     }, 300);
+
+    document.body.removeAttribute("aria-hidden");
+
     this.isModalOpen = false;
+    this.components.inputAutocomplete.focus();
+  }
+
+  #trapFocus() {
+    const focusableElementsString =
+      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]';
+    const focusableElements = this.components.modal.element.querySelectorAll(
+      focusableElementsString
+    );
+    let firstFocusableElement = focusableElements[0];
+
+    let currentFocusIndex = 0;
+    firstFocusableElement.focus();
+    this.#addArrowNavigation(focusableElements, currentFocusIndex);
+  }
+
+  #addArrowNavigation(focusableElements, currentFocusIndex) {
+    this.components.modal.element.addEventListener("keydown", (e) => {
+      if (!this.isModalOpen) return;
+
+      const isTabPressed = e.key === "Tab" || e.keyCode === 9;
+      const isArrowKey = [
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "Tab",
+      ].includes(e.key);
+      if (!isArrowKey) return;
+
+      e.preventDefault();
+
+      const columns = this.itemsPerRow;
+      console.log({ focusableElements, currentFocusIndex });
+      if (e.key === "ArrowRight" || isTabPressed) {
+        currentFocusIndex = (currentFocusIndex + 1) % focusableElements.length;
+      } else if (e.key === "ArrowLeft") {
+        currentFocusIndex =
+          (currentFocusIndex - 1 + focusableElements.length) %
+          focusableElements.length;
+      } else if (e.key === "ArrowDown") {
+        currentFocusIndex =
+          (currentFocusIndex + columns) % focusableElements.length;
+      } else if (e.key === "ArrowUp") {
+        currentFocusIndex =
+          (currentFocusIndex - columns + focusableElements.length) %
+          focusableElements.length;
+      }
+
+      focusableElements[currentFocusIndex].focus();
+    });
   }
 
   isOpen() {
@@ -92,6 +150,8 @@ class GridColorPicker {
       node.classList.add(this.animation);
     }
     node.style.zIndex = 9999;
+    node.role = "dialog";
+    node.tabIndex = -1;
 
     const container = document.createElement("div");
     container.classList.add(`${this.selector}-container`, "fs-xs");
@@ -133,6 +193,12 @@ class GridColorPicker {
         !this?.components?.inputAutocomplete?.contains(event.target) &&
         this.isModalOpen
       ) {
+        this.close();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && this.isModalOpen) {
         this.close();
       }
     });
@@ -179,12 +245,14 @@ class GridColorPicker {
 
       const colorWrapper = document.createElement("div");
       colorWrapper.classList.add(`${this.selector}-box`);
-
       colorWrapper.setAttribute("data-color", color);
 
-      const colorNode = document.createElement("div");
+      const colorNode = document.createElement("button");
       colorNode.classList.add(`${this.selector}-box-color`);
       colorNode.style.backgroundColor = color;
+
+      colorNode.setAttribute("tabindex", "0");
+
       colorNode.addEventListener("click", () => {
         this.#addColorBoxToInput(color);
         this.close();
