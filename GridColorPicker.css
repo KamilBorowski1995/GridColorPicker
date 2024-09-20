@@ -10,7 +10,6 @@
 
 .gcp-autocomplete-wrapper {
   position: relative;
-  cursor: pointer;
   display: inline;
 }
 
@@ -43,7 +42,6 @@
 
 .gcp-box {
   padding: 2px;
-  cursor: pointer;
 }
 
 .gcp-box-color {
@@ -52,6 +50,7 @@
   border: 1px solid transparent;
   border-radius: 2px;
   transition: 0.3s ease;
+  cursor: pointer;
 }
 
 .gcp-box:hover .gcp-box-color {

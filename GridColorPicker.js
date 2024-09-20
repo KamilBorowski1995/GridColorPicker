@@ -1,5 +1,5 @@
 class GridColorPicker {
-  constructor(input, options) {
+  constructor(input, options = {}) {
     this.name = "GridColorPicker";
     this.selector = "gcp";
     this.components = {
@@ -13,29 +13,49 @@ class GridColorPicker {
     };
     this.input = input;
 
-    // Options
-    this.setSelectType = options?.setSelectType || "hex";
-    this.mainColors = options?.mainColors || colorsPalette.main;
-    this.othersColors = options?.othersColors || colorsPalette.others;
-    this.animation = options?.animation || "none";
-    this.itemsPerRow = options?.itemsPerRow || 8;
-    this.defaultColor = options?.defaultColor || null;
-    this.callback = options?.callback || null;
+    const defaultOptions = {
+      setSelectType: "hex",
+      mainColors: colorsPalette.main,
+      othersColors: colorsPalette.others,
+      animation: "none",
+      itemsPerRow: 8,
+      defaultColor: null,
+      callback: null,
+      autoOpen: false,
+    };
+
+    const {
+      setSelectType,
+      mainColors,
+      othersColors,
+      animation,
+      itemsPerRow,
+      defaultColor,
+      callback,
+      autoOpen,
+    } = { ...defaultOptions, ...options };
+
+    this.setSelectType = this.#validateColorFormat(setSelectType);
+    this.mainColors = Array.isArray(mainColors)
+      ? mainColors
+      : defaultOptions.mainColors;
+    this.othersColors = Array.isArray(othersColors)
+      ? othersColors
+      : defaultOptions.othersColors;
+    this.animation = this.#validateAnimationType(animation);
+    this.itemsPerRow =
+      Number.isInteger(itemsPerRow) && itemsPerRow > 0
+        ? itemsPerRow
+        : defaultOptions.itemsPerRow;
+    this.defaultColor = this.#validateColorFormat(defaultColor);
+    this.callback =
+      typeof callback === "function" ? callback : defaultOptions.callback;
+    this.autoOpen =
+      typeof autoOpen === "boolean" ? autoOpen : defaultOptions.autoOpen;
 
     this.isModalOpen = false;
 
     this.#init();
-  }
-
-  #init() {
-    if (!this.input) {
-      console.error("Element GridColorPicker not found");
-      return;
-    }
-
-    this.#createId();
-    this.#convertInputToHidden();
-    this.#createModal();
   }
 
   open() {
@@ -45,6 +65,10 @@ class GridColorPicker {
     this.#trapFocus();
 
     document.body.setAttribute("aria-hidden", "true");
+  }
+
+  isOpen() {
+    return this.isModalOpen;
   }
 
   close() {
@@ -58,6 +82,127 @@ class GridColorPicker {
 
     this.isModalOpen = false;
     this.components.inputAutocomplete.focus();
+  }
+
+  #validateColorFormat(color) {
+    const validFormats = ["hex", "rgb", "rgba"];
+    if (color && validFormats.includes(color)) {
+      return color;
+    }
+    return null;
+  }
+
+  #validateAnimationType(animation) {
+    const validAnimations = ["none", "slide", "fade"];
+    if (validAnimations.includes(animation)) {
+      return animation;
+    }
+    return "none";
+  }
+
+  #init() {
+    if (!this.input) {
+      console.error("Element GridColorPicker not found");
+      return;
+    }
+
+    this.#createId();
+    this.#convertInputToHidden();
+    this.#createModal();
+  }
+
+  #createId() {
+    let tmpId = `${this.selector}-${(
+      Math.random().toString(36) + "000000000"
+    ).slice(2, 10)}`;
+    this.components.modal.id = tmpId;
+  }
+
+  #convertInputToHidden() {
+    const input = this.input;
+    input.type = "hidden";
+
+    const wrapper = document.createElement("div");
+    wrapper.classList.add(`${this.selector}-autocomplete-wrapper`);
+
+    const inputAutocomplete = document.createElement("input");
+    inputAutocomplete.type = "text";
+    inputAutocomplete.id = input.id + "_autocomplete";
+    inputAutocomplete.className = input.className;
+
+    wrapper.appendChild(inputAutocomplete);
+
+    input.insertAdjacentElement("afterend", wrapper);
+    this.components.inputAutocomplete = inputAutocomplete;
+
+    this.#addColorFromInitValue();
+  }
+
+  async #addColorFromInitValue() {
+    const valueID = this.input.value;
+
+    if (!valueID && !this.defaultColor) {
+      return;
+    }
+    this.#addColorBoxToInput(this.defaultColor, valueID);
+  }
+
+  #createModal() {
+    const node = document.createElement("div");
+    node.id = this.components.modal.id;
+    node.classList.add(this.selector);
+    node.style.position = "absolute";
+    if (/^(slide|fade)$/.test(this.animation)) {
+      node.classList.add(this.animation);
+    }
+    node.style.zIndex = 9999;
+    node.role = "dialog";
+    node.tabIndex = -1;
+
+    const container = document.createElement("div");
+    container.classList.add(`${this.selector}-container`, "fs-xs");
+
+    node.appendChild(container);
+
+    this.components.inputAutocomplete.parentElement.appendChild(node);
+
+    this.components.modal.element = node;
+    this.components.modal.container = container;
+
+    this.#addOpenListener();
+    this.#addCloseListener();
+
+    this.#renderBody();
+
+    if (this.autoOpen) {
+      this.open();
+    }
+  }
+
+  #addOpenListener() {
+    this.components.inputAutocomplete.addEventListener("click", () => {
+      if (!this.isModalOpen) {
+        this.open();
+      }
+    });
+  }
+
+  #addCloseListener() {
+    document.addEventListener("click", (event) => {
+      if (
+        !this?.components?.modal?.element?.contains(event.target) &&
+        !this?.components?.inputAutocomplete?.contains(event.target) &&
+        this.isModalOpen
+      ) {
+        this.close();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && this.isModalOpen) {
+        this.close();
+      }
+    });
   }
 
   #trapFocus() {
@@ -107,100 +252,6 @@ class GridColorPicker {
       }
 
       focusableElements[currentFocusIndex].focus();
-    });
-  }
-
-  isOpen() {
-    return this.isModalOpen;
-  }
-
-  #createId() {
-    let tmpId = `${this.selector}-${(
-      Math.random().toString(36) + "000000000"
-    ).slice(2, 10)}`;
-    this.components.modal.id = tmpId;
-  }
-
-  #convertInputToHidden() {
-    const input = this.input;
-    input.type = "hidden";
-
-    const wrapper = document.createElement("div");
-    wrapper.classList.add(`${this.selector}-autocomplete-wrapper`);
-
-    const inputAutocomplete = document.createElement("input");
-    inputAutocomplete.type = "text";
-    inputAutocomplete.id = input.id + "_autocomplete";
-    inputAutocomplete.className = input.className;
-
-    wrapper.appendChild(inputAutocomplete);
-
-    input.insertAdjacentElement("afterend", wrapper);
-    this.components.inputAutocomplete = inputAutocomplete;
-
-    this.#addColorFromInitValue();
-  }
-
-  #createModal() {
-    const node = document.createElement("div");
-    node.id = this.components.modal.id;
-    node.classList.add(this.selector);
-    node.style.position = "absolute";
-    if (/^(slide|fade)$/.test(this.animation)) {
-      node.classList.add(this.animation);
-    }
-    node.style.zIndex = 9999;
-    node.role = "dialog";
-    node.tabIndex = -1;
-
-    const container = document.createElement("div");
-    container.classList.add(`${this.selector}-container`, "fs-xs");
-
-    node.appendChild(container);
-
-    this.components.inputAutocomplete.parentElement.appendChild(node);
-
-    this.components.modal.element = node;
-    this.components.modal.container = container;
-
-    this.#addOpenListener();
-    this.#addCloseListener();
-
-    this.#renderBody();
-  }
-
-  async #addColorFromInitValue() {
-    const valueID = this.input.value;
-
-    if (!valueID && !this.defaultColor) {
-      return;
-    }
-    this.#addColorBoxToInput(this.defaultColor, valueID);
-  }
-
-  #addOpenListener() {
-    this.components.inputAutocomplete.addEventListener("click", () => {
-      if (!this.isModalOpen) {
-        this.open();
-      }
-    });
-  }
-
-  #addCloseListener() {
-    document.addEventListener("click", (event) => {
-      if (
-        !this?.components?.modal?.element?.contains(event.target) &&
-        !this?.components?.inputAutocomplete?.contains(event.target) &&
-        this.isModalOpen
-      ) {
-        this.close();
-      }
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && this.isModalOpen) {
-        this.close();
-      }
     });
   }
 
