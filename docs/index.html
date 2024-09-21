@@ -3,51 +3,214 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Example: GridColorPicker</title>
+    <title>Grid-color-picker</title>
+    <link rel="stylesheet" href="./docs-style.css" />
     <link rel="stylesheet" href="./GridColorPicker.css" />
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        background-color: #f0f0f0;
-        padding-top: 100px;
-      }
-
-      .form-control {
-        width: 200px;
-        height: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        color: transparent;
-      }
-
-      .form-control:hover,
-      .form-control:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.6);
-      }
-    </style>
+    <script src="./GridColorPicker.js"></script>
   </head>
   <body>
-    <input type="text" id="colorPicker" class="form-control" />
+    <header>
+      <h1>Grid Color Picker</h1>
+      <a
+        href="https://github.com/KamilBorowski1995/grid-color-picker"
+        target="_blank"
+        class="github-link"
+        >GitHub Documentation</a
+      >
+    </header>
+    <main>
+      <div class="color-picker-container">
+        <input type="text" id="colorPicker" class="form-control" />
+        <div class="selected-color">
+          <p>Selected Color:</p>
+          <div class="selected-color__box"></div>
+        </div>
+      </div>
+    </main>
+    <aside>
+      <div class="form-group">
+        <label class="form-label" for="defaultColor">defaultColor</label>
+        <input
+          type="text"
+          id="defaultColor"
+          class="form-control"
+          placeholder="#000000"
+        />
+      </div>
 
-    <script src="./GridColorPicker.js"></script>
+      <div class="form-group">
+        <label class="form-label" for="selectType">selectType</label>
+        <div class="radio-group-horizontal">
+          <div class="radio-item">
+            <input
+              type="radio"
+              id="hex"
+              name="selectType"
+              value="hex"
+              checked
+            />
+            <label for="hex">hex</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" id="rgb" name="selectType" value="rgb" />
+            <label for="rgb">rgb</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" id="rgba" name="selectType" value="rgba" />
+            <label for="rgba">rgba</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="animation">animation</label>
+        <div class="radio-group-horizontal">
+          <div class="radio-item">
+            <input
+              type="radio"
+              id="none"
+              name="animation"
+              value="none"
+              checked
+            />
+            <label for="none">none</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" id="slide" name="animation" value="slide" />
+            <label for="slide">slide</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" id="fade" name="animation" value="fade" />
+            <label for="fade">fade</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="itemsPerRow">itemsPerRow</label>
+        <input
+          type="number"
+          id="itemsPerRow"
+          class="form-control"
+          min="1"
+          max="20"
+          value="8"
+        />
+      </div>
+
+      <div class="form-group check-container">
+        <div class="check">
+          <input type="checkbox" class="check__check" id="autoOpen" />
+          <div class="check__indicator"></div>
+        </div>
+        <label for="autoOpen" class="check-label">autoOpen</label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="mainColors"
+          >mainColors (Array of Colors / null for default)</label
+        >
+        <textarea
+          type="text"
+          id="mainColors"
+          class="form-control"
+          rows="4"
+          placeholder='example: ["#ff0000","#ff6600","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff","#808080"]'
+        >
+["#ff0000","#ff6600","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff","#808080"]</textarea
+        >
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="othersColors"
+          >othersColors (Array of Colors / null for default)</label
+        >
+        <textarea
+          type="text"
+          id="othersColors"
+          class="form-control"
+          rows="4"
+          placeholder='example: ["#ffcccc","#ffcc99","#ffffcc","#ccffcc","#ccffff","#ccccff","#ffccff","#cccccc","#ff9999","#ffcc66","#ffff99","#99ff99","#99ffff","#9999ff","#ff99ff","#999999"]'
+        >
+["#ffcccc","#ffcc99","#ffffcc","#ccffcc","#ccffff","#ccccff","#ffccff","#cccccc","#ff9999","#ffcc66","#ffff99","#99ff99","#99ffff","#9999ff","#ff99ff","#999999"]</textarea
+        >
+      </div>
+    </aside>
 
     <script>
       const colorElement = document.getElementById("colorPicker");
-      const gridColorPicker = new GridColorPicker(colorElement, {
-        setSelectType: "hex", // hex, rgb, rgba
-        animation: "fade", // slide, fade or none
-        autoOpen: false,
+      const defaultColorInput = document.getElementById("defaultColor");
+      const selectTypeInputs = document.querySelectorAll(
+        'input[name="selectType"]'
+      );
+      const animationInputs = document.querySelectorAll(
+        'input[name="animation"]'
+      );
+      const itemsPerRowInput = document.getElementById("itemsPerRow");
+      const autoOpenInput = document.getElementById("autoOpen");
 
-        callback: (selectedColor) => {
-          console.log(selectedColor);
-        },
-      });
+      const mainColorsInput = document.getElementById("mainColors");
+      const othersColorsInput = document.getElementById("othersColors");
+
+      let gridColorPicker;
+
+      const parseArrayColors = (input) => {
+        try {
+          return JSON.parse(input.value);
+        } catch (error) {
+          return null;
+        }
+      };
+
+      const updateColorPicker = () => {
+        if (gridColorPicker) {
+          gridColorPicker = null;
+          document.querySelector(".gcp-autocomplete-wrapper").remove();
+        }
+
+        const selectedType = document.querySelector(
+          'input[name="selectType"]:checked'
+        ).value;
+        const selectedAnimation = document.querySelector(
+          'input[name="animation"]:checked'
+        ).value;
+        const defaultColor = defaultColorInput.value || null;
+        const itemsPerRow = parseInt(itemsPerRowInput.value, 10) || 8;
+        const autoOpen = autoOpenInput.checked;
+
+        gridColorPicker = new GridColorPicker(colorElement, {
+          selectType: selectedType,
+          animation: selectedAnimation,
+          defaultColor: defaultColor,
+          itemsPerRow: itemsPerRow,
+          autoOpen: autoOpen,
+          mainColors: parseArrayColors(mainColorsInput),
+          othersColors: parseArrayColors(othersColorsInput),
+          callback: (selectedColor) => {
+            console.log("Selected Color:", selectedColor);
+            const selectedColorBox = document.querySelector(
+              ".selected-color__box"
+            );
+            selectedColorBox.style.border = `1px solid ${selectedColor}`;
+            selectedColorBox.style.boxShadow = `0 0 5px ${selectedColor}`;
+            selectedColorBox.textContent = selectedColor;
+          },
+        });
+      };
+
+      defaultColorInput.addEventListener("input", updateColorPicker);
+      selectTypeInputs.forEach((input) =>
+        input.addEventListener("change", updateColorPicker)
+      );
+      animationInputs.forEach((input) =>
+        input.addEventListener("change", updateColorPicker)
+      );
+      itemsPerRowInput.addEventListener("input", updateColorPicker);
+      autoOpenInput.addEventListener("change", updateColorPicker);
+
+      mainColorsInput.addEventListener("input", updateColorPicker);
+      othersColorsInput.addEventListener("input", updateColorPicker);
+
+      updateColorPicker();
     </script>
   </body>
 </html>

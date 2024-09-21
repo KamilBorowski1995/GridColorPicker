@@ -1,0 +1,191 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 5fr 3fr;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  grid-template-rows: 64px 1fr;
+  grid-template-areas:
+    "header header"
+    "main aside";
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #0366d6;
+  color: white;
+  grid-area: header;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.github-link {
+  background-color: white;
+  color: #0366d6;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.github-link:hover {
+  background-color: #f0f0f0;
+}
+
+.selected-color__box {
+  width: 100px;
+  height: 100px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.form-control {
+  padding: 5px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #24292e;
+  background-color: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  outline: none;
+  box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;
+}
+
+.form-control::placeholder {
+  color: #a4a5a7;
+}
+
+.form-control:hover,
+.form-control:focus {
+  border-color: #0366d6;
+  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+  grid-area: main;
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selected-color {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+aside {
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+  background-color: #fff;
+  border-left: 1px solid #e1e4e8;
+  height: 100%;
+  grid-area: aside;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292e;
+  margin-bottom: 5px;
+}
+
+.radio-group-horizontal {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.check {
+  display: inline-block;
+  height: 24px;
+  width: 50px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.check__check {
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.check__check:checked ~ .check__indicator {
+  background: #0366d6;
+}
+
+.check__check:checked ~ .check__indicator:after {
+  transform: translateX(26px);
+}
+
+.check__indicator {
+  height: 100%;
+  width: 100%;
+  background: #bbbbbb;
+  transition: background 0.25s ease;
+  position: relative;
+}
+
+.check__indicator:after {
+  content: "";
+  height: 20px;
+  width: 20px;
+  background: #fff;
+  position: absolute;
+  border-radius: 100%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.25s ease;
+}
+
+.check-container {
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.check-label {
+  margin-left: 10px;
+  cursor: pointer;
+}

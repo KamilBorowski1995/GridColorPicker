@@ -17,6 +17,10 @@
   cursor: pointer;
 }
 
+.gcp-autocomplete-wrapper > input::selection {
+  background: transparent;
+}
+
 .gcp-autocomplete-wrapper .gcp-color-box {
   position: absolute;
   top: 0;

@@ -14,7 +14,7 @@ class GridColorPicker {
     this.input = input;
 
     const defaultOptions = {
-      setSelectType: "hex",
+      selectType: "hex",
       mainColors: colorsPalette.main,
       othersColors: colorsPalette.others,
       animation: "none",
@@ -23,9 +23,8 @@ class GridColorPicker {
       callback: null,
       autoOpen: false,
     };
-
     const {
-      setSelectType,
+      selectType,
       mainColors,
       othersColors,
       animation,
@@ -34,8 +33,7 @@ class GridColorPicker {
       callback,
       autoOpen,
     } = { ...defaultOptions, ...options };
-
-    this.setSelectType = this.#validateColorFormat(setSelectType);
+    this.selectType = this.#validateColorFormat(selectType);
     this.mainColors = Array.isArray(mainColors)
       ? mainColors
       : defaultOptions.mainColors;
@@ -47,7 +45,10 @@ class GridColorPicker {
       Number.isInteger(itemsPerRow) && itemsPerRow > 0
         ? itemsPerRow
         : defaultOptions.itemsPerRow;
-    this.defaultColor = this.#validateColorFormat(defaultColor);
+    this.defaultColor =
+      this.#detectColorFormat(defaultColor) !== "Unknown format"
+        ? defaultColor
+        : null;
     this.callback =
       typeof callback === "function" ? callback : defaultOptions.callback;
     this.autoOpen =
@@ -84,10 +85,10 @@ class GridColorPicker {
     this.components.inputAutocomplete.focus();
   }
 
-  #validateColorFormat(color) {
+  #validateColorFormat(colorFormat) {
     const validFormats = ["hex", "rgb", "rgba"];
-    if (color && validFormats.includes(color)) {
-      return color;
+    if (colorFormat && validFormats.includes(colorFormat)) {
+      return colorFormat;
     }
     return null;
   }
@@ -329,7 +330,7 @@ class GridColorPicker {
       color = isColor ? inoutValueColor : null;
     }
 
-    const colorFormated = this.#convertColor(color, this.setSelectType);
+    const colorFormated = this.#convertColor(color, this.selectType);
 
     this.components.input.value = this.components.inputAutocomplete.value =
       colorFormated;

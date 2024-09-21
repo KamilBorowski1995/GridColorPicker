@@ -10,7 +10,7 @@
 ```js
 const colorPickerElement = document.getElementById("colorPicker");
 const gridColorPicker = new GridColorPicker(colorPickerElement, {
-  setSelectType: "hex", // Choose the format: hex, rgb, or rgba
+  selectType: "hex", // Choose the format: hex, rgb, or rgba
   mainColors: [], // Main colors to display in the picker
   othersColors: [], // Additional colors to display in the picker
   animation: "fade", // Animation type: fade, slide, or none
@@ -25,20 +25,20 @@ const gridColorPicker = new GridColorPicker(colorPickerElement, {
 
 ## Options
 
-| Property        | Type       | Description                                                                                                                                                                                                                      |
-| --------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `setSelectType` | `string`   | Specifies the format of the selected color. Can be `hex`, `rgb`, or `rgba`.                                                                                                                                                      |
-| `mainColors`    | `array`    | An array of colors to display as the main palette. Colors can be in hex, rgb, or rgba format.                                                                                                                                    |
-| `othersColors`  | `array`    | An array of additional colors to display below the main colors. Colors can be in hex, rgb, or rgba format.                                                                                                                       |
-| `animation`     | `string`   | Sets the type of animation when the color picker opens/closes. Can be `"fade"`, `"slide"`, or `"none"`.                                                                                                                          |
-| `itemsPerRow`   | `number`   | Specifies how many colors to display per row in the grid. Default is `8`.                                                                                                                                                        |
-| `defaultColor`  | `string`   | Specifies the default color to be selected when the color picker is initialized. The color can be in `hex`, `rgb`, or `rgba` format, depending on the `setSelectType` setting. If not provided, no color is selected by default. |
-| `autoOpen`      | `boolean`  | Automatically opens the color picker when it is initialized. Default is `false`.                                                                                                                                                 |
-| `callback`      | `function` | A callback function that is executed when a color is selected. The selected color is passed to this function in the format defined by `setSelectType`.                                                                           |
+| Property       | Type       | Description                                                                                                                                                                                                                   |
+| -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `selectType`   | `string`   | Specifies the format of the selected color. Can be `hex`, `rgb`, or `rgba`.                                                                                                                                                   |
+| `mainColors`   | `array`    | An array of colors to display as the main palette. Colors can be in hex, rgb, or rgba format.                                                                                                                                 |
+| `othersColors` | `array`    | An array of additional colors to display below the main colors. Colors can be in hex, rgb, or rgba format.                                                                                                                    |
+| `animation`    | `string`   | Sets the type of animation when the color picker opens/closes. Can be `"fade"`, `"slide"`, or `"none"`.                                                                                                                       |
+| `itemsPerRow`  | `number`   | Specifies how many colors to display per row in the grid. Default is `8`.                                                                                                                                                     |
+| `defaultColor` | `string`   | Specifies the default color to be selected when the color picker is initialized. The color can be in `hex`, `rgb`, or `rgba` format, depending on the `selectType` setting. If not provided, no color is selected by default. |
+| `autoOpen`     | `boolean`  | Automatically opens the color picker when it is initialized. Default is `false`.                                                                                                                                              |
+| `callback`     | `function` | A callback function that is executed when a color is selected. The selected color is passed to this function in the format defined by `selectType`.                                                                           |
 
 ### Detailed Option Descriptions:
 
-- **setSelectType**: Determines the format in which the selected color will be returned. Possible values are:
+- **selectType**: Determines the format in which the selected color will be returned. Possible values are:
 
   - `"hex"` for colors in hexadecimal format (e.g., `#ffcc00`),
   - `"rgb"` for colors in RGB format (e.g., `rgb(255, 204, 0)`),
@@ -56,11 +56,11 @@ const gridColorPicker = new GridColorPicker(colorPickerElement, {
 
 - **itemsPerRow**: Specifies how many colors (items) will be displayed in each row of the grid. The default value is `8`.
 
-- **defaultColor**: Specifies the default color to be selected when the color picker is initialized. The color can be in `hex`, `rgb`, or `rgba` format, depending on the `setSelectType` setting. If not provided, no color is selected by default.
+- **defaultColor**: Specifies the default color to be selected when the color picker is initialized. The color can be in `hex`, `rgb`, or `rgba` format, depending on the `selectType` setting. If not provided, no color is selected by default.
 
 - **autoOpen**: A boolean option that, if set to `true`, will automatically open the color picker when it is initialized. By default, this option is set to `false`.
 
-- **callback**: A function that is triggered when a user selects a color from the grid. The selected color is passed as an argument to the callback, and it will be in the format defined by `setSelectType`.
+- **callback**: A function that is triggered when a user selects a color from the grid. The selected color is passed as an argument to the callback, and it will be in the format defined by `selectType`.
 
 ## Functions
 
